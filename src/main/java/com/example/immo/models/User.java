@@ -36,7 +36,7 @@ public class User implements UserDetails {
     /* GeneratedValue / Identity : autoincrement a number when id is missing */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long userId;
+    private Integer userId;
 
     /*
      * @Column(name = "first_name", nullable = false, length = 255)
@@ -90,7 +90,7 @@ public class User implements UserDetails {
      * }
      */
 
-    public User(Long userId, /* String firstname, String lastname, */ String name, String email, String password,
+    public User(Integer userId, /* String firstname, String lastname, */ String name, String email, String password,
                 Set<Role> authorities) {
         super();
         this.userId = userId;
@@ -124,11 +124,11 @@ public class User implements UserDetails {
      * }
      */
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return this.userId;
     }
 
-    public void setId(Long userId) {
+    public void setId(Integer userId) {
         this.userId = userId;
     }
 
