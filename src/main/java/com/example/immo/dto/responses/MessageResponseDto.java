@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Data
 public class MessageResponseDto {
-    private Long messageId;
+    private Integer messageId;
     private RentalResponseDto rental;
     private UserResponseDto user;
     private String message;

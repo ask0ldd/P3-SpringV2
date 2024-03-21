@@ -11,11 +11,11 @@ import java.util.Date;
 @Setter
 @Getter
 public class RentalResponseDto {
-    private Long id;
+    private Integer id;
     private String description;
     private String name;
     // private ReturnableUserDto owner;
-    private Long owner_id;
+    private Integer owner_id;
     private String picture;
     private Integer surface;
     private Integer price;

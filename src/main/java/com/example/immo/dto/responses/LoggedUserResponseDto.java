@@ -11,7 +11,7 @@ import java.util.Date;
 @Setter
 @Data
 public class LoggedUserResponseDto {
-    private Long id;
+    private Integer id;
     private String name;
     private String email;
     private Date created_at;
