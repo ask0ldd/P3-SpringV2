@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PayloadMessageDto {
-    private Long rental_id;
-    private Long user_id;
+    private Integer rental_id;
+    private Integer user_id;
     private String message;
 }
