@@ -1,11 +1,13 @@
 package com.example.immo.utils;
 
+import org.springframework.context.annotation.Bean;
+
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 
 public class KeyGeneratorUtility {
 
-    public KeyPair generateRSAKeys() {
+    public static KeyPair generateRSAKeys() {
 
         KeyPair keyPair;
 
