@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +56,6 @@ public class AuthService implements IAuthService {
         } catch (AuthenticationException e) {
             return new TokenResponseDto(""); // maybe 40x error instead
         }
-
     }
 
     public TokenResponseDto loginUser(String email, String password) {
@@ -71,8 +69,8 @@ public class AuthService implements IAuthService {
         }
     }
 
-    public User getUserInfos() {
+    /*public User getUserInfos() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return (User) auth.getPrincipal();
-    }
+    }*/
 }

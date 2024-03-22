@@ -9,5 +9,5 @@ public interface IAuthService {
 
     TokenResponseDto loginUser(String email, String password);
 
-    User getUserInfos();
+    // User getUserInfos();
 }
