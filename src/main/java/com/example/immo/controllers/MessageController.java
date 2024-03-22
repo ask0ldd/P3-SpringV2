@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "https://editor.swagger.io"})
 public class MessageController {
 
     private final MessageService messageService;
@@ -45,6 +45,7 @@ public class MessageController {
             if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized Access");
             }
+            // !!!!!!!! use authenticated user id instead of the one in message and compare the two
             User user = userService.getUser(message.getUser_id());
             Rental rental = rentalService.getRental(message.getRental_id());
             Message newMessage = Message.builder().message(message.getMessage()).user(user)
@@ -53,7 +54,7 @@ public class MessageController {
             return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Message sent with success"),
                     HttpStatus.CREATED);
         } catch (Exception exception) {
-            return new ResponseEntity<>("Can't create the target Message.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't create the target Message."), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -66,31 +67,31 @@ public class MessageController {
             headers.setContentType(MediaType.APPLICATION_JSON);
             return new ResponseEntity<>(messages, headers, HttpStatus.OK);
         } catch (Exception exception) {
-            return new ResponseEntity<String>("Can't find any Message.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't find any Message."), HttpStatus.NOT_FOUND);
         }
     }
 
     // Not Required
     @GetMapping("/message/{id}")
-    public ResponseEntity<?> getMessage(@PathVariable("id") final Long id) {
+    public ResponseEntity<?> getMessage(@PathVariable("id") final Integer id) {
         try {
             MessageResponseDto message = messageService.getReturnableMessage(id);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
         } catch (Exception exception) {
-            return new ResponseEntity<String>("Can't find the requested Message.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't find the requested Message."), HttpStatus.NOT_FOUND);
         }
     }
 
     // Not Required
     @DeleteMapping("/message/{id}")
-    public ResponseEntity<?> deleteMessage(@PathVariable("id") final Long id) {
+    public ResponseEntity<?> deleteMessage(@PathVariable("id") final Integer id) {
         try {
             messageService.deleteMessage(id);
-            return new ResponseEntity<String>("Message deleted.", HttpStatus.OK);
+            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Message deleted."), HttpStatus.OK);
         } catch (Exception exception) {
-            return new ResponseEntity<String>("Can't find the requested Message.",
+            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't find the requested Message."),
                     HttpStatus.NOT_FOUND);
         }
     }
