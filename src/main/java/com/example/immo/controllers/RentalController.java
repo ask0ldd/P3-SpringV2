@@ -21,7 +21,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("api")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "https://editor.swagger.io"})
 public class RentalController {
 
     private final RentalService rentalService;
@@ -36,7 +36,7 @@ public class RentalController {
 
     // Retrieve all Rentals
     @GetMapping("/rentals")
-    public ResponseEntity<?> getRentals() {
+    public ResponseEntity<?> getRentals() { // !!! should return an empty array when no rentals?
         try {
             if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized Access");
@@ -50,14 +50,17 @@ public class RentalController {
         }
     }
 
-    // Retrieve the target Rental
+    // Retrieve the target Rental //
     @GetMapping("/rentals/{id}")
-    public ResponseEntity<?> getRental(@PathVariable("id") final Long id) {
+    public ResponseEntity<?> getRental(@PathVariable("id") final Integer id) {
         try {
             if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized Access");
             }
             RentalResponseDto rental = rentalService.getReturnableRental(id);
+            /*if (loggedUser == null) {
+                return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
+            }*/
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             return new ResponseEntity<>(rental, headers, HttpStatus.OK);
@@ -68,7 +71,7 @@ public class RentalController {
 
     // Update the target Rental
     @PutMapping("/rentals/{id}")
-    public ResponseEntity<?> updateRental(@PathVariable("id") final Long id,
+    public ResponseEntity<?> updateRental(@PathVariable("id") final Integer id,
                                           @RequestParam("name") String name,
                                           @RequestParam("surface") Integer surface,
                                           @RequestParam("price") Integer price,
@@ -80,7 +83,7 @@ public class RentalController {
             Rental rental = rentalService.getRental(id);
 
             if (rental == null) {
-                return new ResponseEntity<String>("Can't find the requested Rental.", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<String>("Can't update the requested Rental.", HttpStatus.NOT_FOUND);
             }
 
             // !!!!!!!!!!! should validate datas
@@ -95,43 +98,41 @@ public class RentalController {
             return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Rental updated !"),
                     HttpStatus.OK);
         } catch (Exception exception) {
-            return new ResponseEntity<String>("Can't find the requested Rental.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // Create a new Rental
     @PostMapping("/rentals")
-    public ResponseEntity<?> createRental(HttpServletRequest request, @RequestParam("name") String name,
-                                          @RequestParam("surface") String surface,
-                                          @RequestParam("price") String price, @RequestParam("picture") MultipartFile picture,
-                                          @RequestParam("description") String description) {
+    public ResponseEntity<?> createRental(HttpServletRequest request, @RequestParam("name") String name, @RequestParam("surface") String surface, @RequestParam("price") String price, @RequestParam("picture") MultipartFile picture, @RequestParam("description") String description) {
+        try{
+            if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized Access");
+            }
 
-        if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized Access");
+            if (picture.isEmpty()) {
+                return new ResponseEntity<String>("A picture is needed!", HttpStatus.BAD_REQUEST);
+            }
+
+            // !!!!!!!!!!! should validate datas
+
+            String filename = fileService.save(picture);
+
+            Principal principal = request.getUserPrincipal();
+            String email = principal.getName();
+            User loggedUser = userService.getUserByEmail(email);
+
+            Rental rental = Rental.builder().name(name).rentalId(null).owner(loggedUser)
+                    .description(description)
+                    .picture("http://127.0.0.1:3001/img/rental/" + filename)
+                    .surface(Integer.parseInt(surface)).price(Integer.parseInt(price)).build();
+
+            rentalService.saveRental(rental);
+
+            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Rental created !"), HttpStatus.OK);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        if (picture.isEmpty()) {
-            return new ResponseEntity<String>("A picture is needed!", HttpStatus.BAD_REQUEST);
-        }
-
-        // !!!!!!!!!!! should validate datas
-
-        String filename = fileService.save(picture);
-
-        Principal principal = request.getUserPrincipal();
-        String email = principal.getName();
-        User loggedUser = userService.getUserByEmail(email);
-
-        // 127.0.0.1:3001/img/rental/griff.jpg
-        Rental rental = Rental.builder().name(name).rentalId(null).owner(loggedUser)
-                .description(description)
-                // .picture(picture.getOriginalFilename())
-                .picture("http://127.0.0.1:3001/img/rental/" + filename)
-                .surface(Integer.parseInt(surface)).price(Integer.parseInt(price)).build();
-
-        rentalService.saveRental(rental);
-
-        return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Rental created !"), HttpStatus.OK);
     }
 
 }
