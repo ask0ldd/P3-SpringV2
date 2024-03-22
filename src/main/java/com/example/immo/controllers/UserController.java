@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "https://editor.swagger.io"})
 public class UserController {
 
     private final UserService userService;
@@ -22,7 +22,7 @@ public class UserController {
 
     // Retrieve the target User
     @GetMapping("/user/{id}")
-    public ResponseEntity<?> getUser(@PathVariable("id") final Long id) {
+    public ResponseEntity<?> getUser(@PathVariable("id") final Integer id) {
         try {
             if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized Access");
