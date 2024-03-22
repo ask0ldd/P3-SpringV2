@@ -40,12 +40,12 @@ public class MessageService implements IMessageService {
         return returnableMessages;
     }
 
-    public Message getMessage(Long id) {
+    public Message getMessage(Integer id) {
         return messageRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Target message cannot be found."));
     }
 
-    public MessageResponseDto getReturnableMessage(Long id) {
+    public MessageResponseDto getReturnableMessage(Integer id) {
         Message message = messageRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Target message cannot be found."));
         return new MessageResponseDto(message);
@@ -56,7 +56,7 @@ public class MessageService implements IMessageService {
                 .orElseThrow(() -> new RuntimeException("Failed to save the message."));
     }
 
-    public void deleteMessage(Long id) {
+    public void deleteMessage(Integer id) {
         Message message = messageRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Target message cannot be found."));
         messageRepository.delete(message);
