@@ -40,18 +40,12 @@ import java.util.UUID;
 public class SecurityConfiguration {
 
     // https://github.com/spring-projects/spring-security-samples/blob/6.2.x/servlet/spring-boot/java/oauth2/resource-server/static/src/main/java/example/OAuth2ResourceServerSecurityConfiguration.java
-
-    /*
-        @Value("${file.path}")
-        private String filePath;
-     */
-
     private final RSAPublicKey publicKey;
     private final RSAPrivateKey privateKey;
 
     // https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets
-    public SecurityConfiguration(KeyGeneratorUtility keyGeneratorUtility){
-        KeyPair rsaKeys = keyGeneratorUtility.generateRSAKeys();
+    public SecurityConfiguration(){
+        KeyPair rsaKeys = KeyGeneratorUtility.generateRSAKeys();
         this.publicKey = (RSAPublicKey) rsaKeys.getPublic();
         this.privateKey = (RSAPrivateKey) rsaKeys.getPrivate();
     }
@@ -70,20 +64,6 @@ public class SecurityConfiguration {
         return new NimbusJwtEncoder(jwks);
     }
 
-    /*@Bean
-    public JWKSource<SecurityContext> jwkSource(KeyPair keyPair) {
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        // @formatter:off
-        RSAKey rsaKey = new RSAKey.Builder(publicKey)
-                .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
-                .build();
-        // @formatter:on
-        JWKSet jwkSet = new JWKSet(rsaKey);
-        return new ImmutableJWKSet<>(jwkSet);
-    }*/
-
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -97,7 +77,7 @@ public class SecurityConfiguration {
         return new ProviderManager(daoProvider);
     }
 
-    // !!!!!!!!!!!!!! protect routes
+    // !!!!!!!!!!!!!! protect routes : img for ex
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable())
@@ -125,6 +105,7 @@ public class SecurityConfiguration {
                 .build();
     }
 
+    // https://www.baeldung.com/spring-security-map-authorities-jwt
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
