@@ -37,7 +37,7 @@ public class AuthService implements IAuthService {
         this.tokenService = tokenService;
     }
 
-    public TokenResponseDto registerUser(String email, String username, String password) {
+    public String registerUser(String email, String username, String password) {
         try {
             String encodedPassword = passwordEncoder.encode(password);
 
@@ -51,26 +51,19 @@ public class AuthService implements IAuthService {
 
             Authentication auth = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            String token = tokenService.generateJwt(auth);
-            return new TokenResponseDto(token);
+            return tokenService.generateJwt(auth);
         } catch (AuthenticationException e) {
-            return new TokenResponseDto(""); // maybe 40x error instead
+            return null;
         }
     }
 
-    public TokenResponseDto loginUser(String email, String password) {
+    public String loginUser(String email, String password) {
         try {
             Authentication auth = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            String token = tokenService.generateJwt(auth);
-            return new TokenResponseDto(token);
+            return tokenService.generateJwt(auth);
         } catch (AuthenticationException e) {
-            return new TokenResponseDto("");
+            return null;
         }
     }
-
-    /*public User getUserInfos() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return (User) auth.getPrincipal();
-    }*/
 }

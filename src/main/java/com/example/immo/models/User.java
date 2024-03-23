@@ -28,7 +28,7 @@ import java.util.Set;
 // @Builder // so we can build a new user in our tests
 @AllArgsConstructor
 @Builder
-@Table(name = "utilisateurs")
+@Table(name = "users")
 /* spring security needs some UserDetails methods to be implemented */
 public class User implements UserDetails {
 
@@ -37,14 +37,6 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer userId;
-
-    /*
-     * @Column(name = "first_name", nullable = false, length = 255)
-     * private String firstname;
-     *
-     * @Column(name = "last_name", nullable = false, length = 255)
-     * private String lastname;
-     */
 
     @Column(name = "name", nullable = false, length = 255)
     private String name;
@@ -74,30 +66,10 @@ public class User implements UserDetails {
         authorities = new HashSet<>();
     }
 
-    /*
-     * public User(Long userId, String firstName, String lastName, String email,
-     * String password,
-     * Set<Role> authorities, Date creation, Date update) {
-     * super();
-     * this.userId = userId;
-     * this.firstname = firstName;
-     * this.lastname = lastName;
-     * this.email = email;
-     * this.password = password;
-     * this.authorities = authorities;
-     * this.creation = creation;
-     * this.update = update;
-     * }
-     */
-
-    public User(Integer userId, /* String firstname, String lastname, */ String name, String email, String password,
+    public User(Integer userId, String name, String email, String password,
                 Set<Role> authorities) {
         super();
         this.userId = userId;
-        /*
-         * this.firstname = firstname;
-         * this.lastname = lastname;
-         */
         this.name = name;
         this.email = email;
         this.password = password;
@@ -105,24 +77,6 @@ public class User implements UserDetails {
         this.creation = new Date();
         this.update = new Date();
     }
-
-    /*
-     * @Enumerated(EnumType.STRING)
-     * private Role role;
-     */
-
-    // methods that needs to be overriden to implements userDetails
-
-    /*
-     * @Override
-     * public Collection<? extends GrantedAuthority> getAuthorities() {
-     * String userRole = role.name();
-     * if (userRole.contains("ROLE_") == false) {
-     * userRole = "ROLE_" + userRole;
-     * }
-     * return List.of(new SimpleGrantedAuthority(userRole));
-     * }
-     */
 
     public Integer getUserId() {
         return this.userId;

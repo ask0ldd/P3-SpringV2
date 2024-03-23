@@ -1,12 +1,10 @@
 package com.example.immo.services;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
+import com.example.immo.exceptions.MessageNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.immo.dto.responses.MessageResponseDto;
 import com.example.immo.exceptions.UserNotFoundException;
 import com.example.immo.models.Message;
 import com.example.immo.repositories.MessageRepository;
@@ -21,41 +19,26 @@ public class MessageService implements IMessageService {
         this.messageRepository = messageRepository;
     }
 
-    public Iterable<Message> getMessages() {
-        Iterable<Message> messages = messageRepository.findAll();
-        if (!messages.iterator().hasNext())
-            throw new UserNotFoundException("No message can be found.");
-        return messages;
-    }
-
-    public Iterable<MessageResponseDto> getReturnableMessages() {
-        Iterable<Message> messages = messageRepository.findAll();
-        if (!messages.iterator().hasNext())
-            throw new UserNotFoundException("No message can be found.");
-        Iterable<MessageResponseDto> returnableMessages = StreamSupport.stream(messages.spliterator(), false)
-                .map(message -> {
-                    return new MessageResponseDto(message);
-                })
-                .collect(Collectors.toList());
-        return returnableMessages;
-    }
-
-    public Message getMessage(Integer id) {
-        return messageRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Target message cannot be found."));
-    }
-
-    public MessageResponseDto getReturnableMessage(Integer id) {
-        Message message = messageRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Target message cannot be found."));
-        return new MessageResponseDto(message);
-    }
-
     public Message saveMessage(Message message) {
         return Optional.of(messageRepository.save(message))
                 .orElseThrow(() -> new RuntimeException("Failed to save the message."));
     }
 
+    // useless
+    public Iterable<Message> getMessages() {
+        Iterable<Message> messages = messageRepository.findAll();
+        if (!messages.iterator().hasNext())
+            throw new MessageNotFoundException("No message can be found.");
+        return messages;
+    }
+
+    // useless
+    public Message getMessage(Integer id) {
+        return messageRepository.findById(id)
+                .orElseThrow(() -> new MessageNotFoundException("Target message cannot be found."));
+    }
+
+    // useless
     public void deleteMessage(Integer id) {
         Message message = messageRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Target message cannot be found."));
