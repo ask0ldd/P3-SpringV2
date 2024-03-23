@@ -22,8 +22,6 @@ public class Rental {
     @Column(name = "id")
     private Integer rentalId;
 
-    // @Column(name = "owner_id", nullable = false)
-
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
