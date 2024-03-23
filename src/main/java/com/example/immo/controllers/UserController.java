@@ -2,6 +2,7 @@ package com.example.immo.controllers;
 
 import com.example.immo.dto.responses.UserResponseDto;
 import com.example.immo.services.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api")
-@CrossOrigin(origins = {"http://localhost:4200", "https://editor.swagger.io"})
+@CrossOrigin(origins = {"http://localhost:4200"})
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     private final UserService userService;
@@ -24,9 +26,6 @@ public class UserController {
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") final Integer id) {
         try {
-            if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized Access");
-            }
             UserResponseDto user = new UserResponseDto(userService.getUser(id));
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
