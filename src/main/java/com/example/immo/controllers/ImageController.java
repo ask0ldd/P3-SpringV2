@@ -1,17 +1,16 @@
 package com.example.immo.controllers;
 
-import java.io.IOException;
+import java.util.Objects;
 
+import com.example.immo.dto.responses.DefaultResponseDto;
 import com.example.immo.services.FileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// 127.0.0.1:3001/img/rental/griff.jpg
-// 127.0.0.1:3001/img/getimage
-// 127.0.0.1:3001/img/images/griff.jpg
 @RestController
 @RequestMapping("img")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -27,19 +26,23 @@ public class ImageController {
     private String filePath;
 
     @GetMapping("/rental/{imageName}")
-    public ResponseEntity<Resource> serveImage(@PathVariable String imageName) {
+    public ResponseEntity<?> serveImage(@PathVariable String imageName) {
         try {
+            // get the image as a resource
             Resource resource = fileService.getImgResource(imageName);
-
+            // check if the image is a jpg or a png
+            String contentType = "image/jpeg";
+            if(Objects.requireNonNull(resource.getFilename()).contains(".png")) contentType = "image/png";
+            // send back a response with a header matching the image type
             if (resource.exists() || resource.isReadable()) {
                 return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_TYPE, "image/jpeg") // !!! Change content type based on your image type
+                        .header(HttpHeaders.CONTENT_TYPE, contentType)
                         .body(resource);
             } else {
-                return ResponseEntity.notFound().build();
+                return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("This image can't be found."), HttpStatus.NOT_FOUND);
             }
-        } catch (IOException e) {
-            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("This image can't be found."), HttpStatus.NOT_FOUND);
         }
     }
 }
