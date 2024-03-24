@@ -12,9 +12,10 @@ import java.util.Date;
 @Getter // generate getters
 @Setter // generate setters
 @Data
-@Entity
+@Entity(name = "messages")
 @Builder
 @Table(name = "messages")
+// @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

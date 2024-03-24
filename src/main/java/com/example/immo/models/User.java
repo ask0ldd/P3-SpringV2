@@ -20,7 +20,7 @@ import java.util.Set;
  * setters. La librairie Lombok s’en charge pour nous. Très utile pour alléger
  * le code.
  */
-@Entity
+@Entity(name = "users")
 /*
  * @Entity est une annotation qui indique que la classe correspond à une table
  * de la base de données.

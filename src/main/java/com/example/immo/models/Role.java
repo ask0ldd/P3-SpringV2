@@ -14,7 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
  */
 @Setter
 @Data
-@Entity
+@Entity(name = "roles")
 @Builder
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
