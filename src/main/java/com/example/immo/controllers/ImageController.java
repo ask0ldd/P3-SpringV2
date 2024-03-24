@@ -3,7 +3,11 @@ package com.example.immo.controllers;
 import java.util.Objects;
 
 import com.example.immo.dto.responses.DefaultResponseDto;
-import com.example.immo.services.FileService;
+import com.example.immo.services.FileSystemService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -16,20 +20,25 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:4200")
 public class ImageController {
 
-    private final FileService fileService;
+    private final FileSystemService fileSystemService;
 
-    public ImageController(FileService fileService) {
-        this.fileService = fileService;
+    public ImageController(FileSystemService fileSystemService) {
+        this.fileSystemService = fileSystemService;
     }
 
     @Value("${file.path}")
     private String filePath;
 
     @GetMapping("/rental/{imageName}")
+    @Operation(summary = "Retrieve an Image", description = "Endpoint to retrieve an Image.", tags = {"Image"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Image served.", content = { @Content(mediaType = "image/png"), @Content(mediaType = "image/jpeg") }),
+            @ApiResponse(responseCode = "404", description = "Image not found."),
+    })
     public ResponseEntity<?> serveImage(@PathVariable String imageName) {
         try {
             // get the image as a resource
-            Resource resource = fileService.getImgResource(imageName);
+            Resource resource = fileSystemService.getImgResource(imageName);
             // check if the image is a jpg or a png
             String contentType = "image/jpeg";
             if(Objects.requireNonNull(resource.getFilename()).contains(".png")) contentType = "image/png";
