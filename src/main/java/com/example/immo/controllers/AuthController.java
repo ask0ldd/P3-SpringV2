@@ -42,7 +42,7 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(summary = "Register a new user", description = "Endpoint to register a new user.", tags = {"Auth"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful registration", content = @Content(schema = @Schema(implementation = TokenResponseDto.class))),
+            @ApiResponse(responseCode = "200", description = "Successful registration", content = @Content(schema = @Schema(implementation = TokenResponseDto.class), mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
@@ -60,8 +60,8 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "User Login", description = "Endpoint for user login", tags = {"Auth"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful login", content = @Content(schema = @Schema(implementation = TokenResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class))),
+            @ApiResponse(responseCode = "200", description = "Successful login", content = @Content(schema = @Schema(implementation = TokenResponseDto.class), mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity<?> userLogin(@RequestBody LoginDto body) {
@@ -83,8 +83,9 @@ public class AuthController {
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get logged in user details", description = "Retrieves information about the currently logged in user.", tags = {"Auth"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Informations retrieved", content = @Content(schema = @Schema(implementation = LoggedUserResponseDto.class))),
-            @ApiResponse(responseCode = "404", description = "User not Found", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class))),
+            @ApiResponse(responseCode = "200", description = "Informations retrieved", content = @Content(schema = @Schema(implementation = LoggedUserResponseDto.class), mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized."),
+            @ApiResponse(responseCode = "404", description = "User not Found", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity<?> getLoggedUser(Principal principal){
