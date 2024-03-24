@@ -8,6 +8,12 @@ import com.example.immo.models.User;
 import com.example.immo.services.MessageService;
 import com.example.immo.services.RentalService;
 import com.example.immo.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +43,14 @@ public class MessageController {
 
     // Create a new Message
     @PostMapping("/messages")
+    @Operation(summary = "Create a Rental",
+            tags = {"Messages"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Message sent with success", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), examples = @ExampleObject(value = "{\"message\" : \"Message sent with success.\"}"), mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "Bad request / Can't create the target Message.", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), examples = @ExampleObject(value = "{\"message\" : \"Can't create the target Message.\"}"), mediaType = "application/json")),
+    })
     public ResponseEntity<?> createMessage(@RequestBody PayloadMessageDto message, Principal principal) {
         try {
-            // System.out.println("\u001B[31m" + principal + "\u001B[0m");
             // ignoring the user id from the request body and retrieving the authenticated user
             String email = principal.getName();
             User loggedUser = userService.getUserByEmail(email);
@@ -47,8 +58,8 @@ public class MessageController {
             Message newMessage = Message.builder().message(message.getMessage()).user(loggedUser)
                     .rental(rental).build();
             messageService.saveMessage(newMessage);
-            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Message sent with success"),
-                    HttpStatus.CREATED);
+            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Message sent with success."),
+                    HttpStatus.OK);
         } catch (Exception exception) {
             return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't create the target Message."), HttpStatus.BAD_REQUEST);
         }
