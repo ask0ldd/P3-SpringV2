@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @Data
 public class RentalsResponseDto {
-    private Iterable<RentalResponseDto> rentals;
+    private RentalResponseDto[] rentals;
 
-    public RentalsResponseDto(Iterable<RentalResponseDto> rentals) {
+    public RentalsResponseDto(RentalResponseDto[] rentals) {
         this.rentals = rentals;
     }
 }
