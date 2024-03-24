@@ -4,4 +4,6 @@ public interface IValidationService {
     boolean isName(String string);
 
     boolean isEmail(String string);
+
+    boolean isValidPassword(String string);
 }
