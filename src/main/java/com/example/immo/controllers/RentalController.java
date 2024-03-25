@@ -1,6 +1,7 @@
 package com.example.immo.controllers;
 
 import com.example.immo.dto.payloads.PayloadPutRentalDto;
+import com.example.immo.dto.payloads.PayloadRentalDto;
 import com.example.immo.dto.responses.DefaultResponseDto;
 import com.example.immo.dto.responses.RentalResponseDto;
 import com.example.immo.dto.responses.RentalsResponseDto;
@@ -21,7 +22,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,7 +62,7 @@ public class RentalController {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            // Iterable<RentalResponseDto> rentals = rentalService.getReturnableRentals();
+            // cycle through the rentals to create a RentalsResponseDto being an array of RentalResponseDto
             Iterable<Rental> rentals = rentalService.getRentals();
             RentalResponseDto[] rentalsResponse = StreamSupport.stream(rentals.spliterator(), false)
                     .map(rental -> {
@@ -98,7 +98,6 @@ public class RentalController {
             return new ResponseEntity<>(new RentalResponseDto(rental), headers, HttpStatus.OK);
         } catch (Exception exception) {
             System.out.println("\u001B[31m" + exception + "\u001B[0m");
-            // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't find the requested Rental."), HttpStatus.NOT_FOUND);
         }
     }
@@ -123,17 +122,16 @@ public class RentalController {
             if (rental == null) {
                 return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't update the requested Rental."), HttpStatus.NOT_FOUND);
             }
+            // !!!!!!!!!!! verifier que l'user est bien l'owner de la rental si USER et si ADMIN droit de mod
 
-            // !!!!!!!!!!! should validate datas
-            // verifier que l'user est bien l'owner de la rental si USER et si ADMIN droit de mod
+            // data validation through the dto annotations
+
             rental.setName(payloadPutRentalDto.getName());
             rental.setSurface(payloadPutRentalDto.getSurface());
             rental.setPrice(payloadPutRentalDto.getPrice());
             rental.setDescription(payloadPutRentalDto.getDescription());
 
-            // Rental modifiedRental = rentalService.saveRental(rental);
             rentalService.saveRental(rental);
-            // System.out.println(modifiedRental);
 
             return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Rental updated !"),
                     HttpStatus.OK);
@@ -152,15 +150,20 @@ public class RentalController {
             @ApiResponse(responseCode = "401", description = "Unauthorized."),
             @ApiResponse(responseCode = "500", description = "Internal server error.")
     })
-    public ResponseEntity<?> createRental(HttpServletRequest request, @RequestParam String name, @RequestParam String description, @RequestParam Integer surface, @RequestParam Integer price, @RequestBody final MultipartFile picture) {
+    public ResponseEntity<?> createRental(HttpServletRequest request, @RequestParam final String name, @RequestParam final String description, @RequestParam final Integer surface, @RequestParam final Integer price, @RequestBody final MultipartFile picture) { // should all be final?
     //public ResponseEntity<?> createRental(HttpServletRequest request, @Parameter(description = "Payload Rental DTO", required = true) @ModelAttribute PayloadRentalDto payloadRentalDto/*, @RequestBody final MultipartFile file*/) {
         try{
             if (picture.isEmpty()) {
                 return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Invalid Input."), HttpStatus.BAD_REQUEST);
             }
-            // !!!!!!!!!!! should validate datas
-            String filename = fileSystemService.save(picture);
 
+            // validation through the Dto annotations, throws an exception if the validation fails
+            PayloadRentalDto rentalDto = new PayloadRentalDto(name, description, price, surface, picture);
+
+            // try saving the picture, throws an exception if the file format is unknown
+            String filename = fileSystemService.saveImg(picture);
+
+            // retrieve the logged user using the email (name) from the principal
             Principal principal = request.getUserPrincipal();
             String email = principal.getName();
             User loggedUser = userService.getUserByEmail(email);
