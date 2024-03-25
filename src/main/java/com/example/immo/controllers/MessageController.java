@@ -51,10 +51,11 @@ public class MessageController {
     })
     public ResponseEntity<?> createMessage(@RequestBody PayloadMessageDto message, Principal principal) {
         try {
-            // ignoring the user id from the request body and retrieving the authenticated user
+            // ignoring the user id from the request body and retrieving the logged user through the principal
             String email = principal.getName();
             User loggedUser = userService.getUserByEmail(email);
             Rental rental = rentalService.getRental(message.getRental_id());
+            // the logged user is used as the message sender
             Message newMessage = Message.builder().message(message.getMessage()).user(loggedUser)
                     .rental(rental).build();
             messageService.saveMessage(newMessage);
