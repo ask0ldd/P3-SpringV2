@@ -10,6 +10,7 @@ import com.example.immo.services.AuthService;
 import com.example.immo.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("api/auth")
@@ -43,10 +43,10 @@ public class AuthController {
     @Operation(summary = "Register a new user", description = "Endpoint to register a new user.", tags = {"Auth"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful registration", content = @Content(schema = @Schema(implementation = TokenResponseDto.class), mediaType = "application/json")),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(examples = @ExampleObject(value = "{ }"))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(examples = @ExampleObject(value = "{ }")))
     })
-    public ResponseEntity<TokenResponseDto> userRegister(@RequestBody RegistrationDto body) {
+    public ResponseEntity<?> userRegister(@RequestBody RegistrationDto body) {
         try {
             String token = authService.registerUser(body.getEmail(), body.getUsername(), body.getPassword());
             if (token == null)
