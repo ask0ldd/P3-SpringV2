@@ -9,8 +9,6 @@ import java.util.Date;
 
 @AllArgsConstructor // generate constructor with all args
 @NoArgsConstructor // generate constructor with no args
-@Getter // generate getters
-@Setter // generate setters
 @Data
 @Entity(name = "messages")
 @Builder

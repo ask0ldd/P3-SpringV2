@@ -1,10 +1,7 @@
 package com.example.immo.models;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
 /*
@@ -12,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
  * Spring Boot may create a sequence table to manage the generation of primary key values for entities.
  * This table stores the next value to be used for auto-incrementing primary keys.
  */
-@Setter
 @Data
 @Entity(name = "roles")
 @Builder
