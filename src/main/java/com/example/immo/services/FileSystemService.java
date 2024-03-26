@@ -51,6 +51,7 @@ public class FileSystemService implements IFileSystemService {
     public void deleteAllFiles() {
         String IMAGE_FOLDER = System.getProperty("user.dir") + "/src/main/resources/static/" + filePath;
         Path imagePath = Paths.get(IMAGE_FOLDER);
+        // suppression recursive
         FileSystemUtils.deleteRecursively(imagePath.toFile());
         try {
             // Create the directory

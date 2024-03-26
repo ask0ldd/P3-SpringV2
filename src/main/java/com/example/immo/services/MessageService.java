@@ -26,10 +26,7 @@ public class MessageService implements IMessageService {
 
     // useless
     public Iterable<Message> getMessages() {
-        Iterable<Message> messages = messageRepository.findAll();
-        if (!messages.iterator().hasNext())
-            throw new MessageNotFoundException("No message can be found.");
-        return messages;
+        return messageRepository.findAll();
     }
 
     // useless
@@ -41,7 +38,7 @@ public class MessageService implements IMessageService {
     // useless
     public void deleteMessage(Integer id) {
         Message message = messageRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Target message cannot be found."));
+                .orElseThrow(() -> new MessageNotFoundException("Target message cannot be found."));
         messageRepository.delete(message);
     }
 }
