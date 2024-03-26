@@ -18,7 +18,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpHeaders;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("api")
-@CrossOrigin(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = { "http://localhost:4200" })
 @SecurityRequirement(name = "bearerAuth")
 public class RentalController {
 
@@ -45,25 +46,39 @@ public class RentalController {
         this.fileSystemService = fileSystemService;
     }
 
+    // Retrieve the target Rental
+    @GetMapping("/rentals/{id}")
+    @Operation(summary = "Get a specific rental by ID", description = "Retrieves details of a rental based on the provided ID.", tags = {
+            "Rentals" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the rental.", content = @Content(schema = @Schema(implementation = RentalResponseDto.class), mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized."),
+            @ApiResponse(responseCode = "404", description = "Rental not found.", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), mediaType = "application/json"))
+    })
+    public ResponseEntity<?> getRental(@PathVariable("id") final Integer id) {
+        try {
+            Rental rental = rentalService.getRental(id);
+            return new ResponseEntity<RentalResponseDto>(new RentalResponseDto(rental), HttpStatus.OK);
+        } catch (Exception exception) {
+            System.out.println("\u001B[31m" + exception + "\u001B[0m");
+            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't find the requested Rental."),
+                    HttpStatus.NOT_FOUND);
+        }
+    }
+
     // Retrieve all Rentals
     @GetMapping("/rentals")
-    @Operation(
-            summary = "Get all rentals",
-            description = "Retrieve all rentals available.",
-            tags = {"Rentals"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Rentals retrieved.", content = @Content(schema = @Schema(implementation = RentalsResponseDto.class), mediaType = "application/json",
-                            examples = @ExampleObject(value = "{\"rentals\" : [{\"id\": 0, \"description\": \"string\", \"name\": \"string\", \"owner_id\": 0, \"picture\": \"string\", \"surface\": 0, \"price\": 0, \"created_at\": \"string\", \"updated_at\": \"string\"}]}"))),
+    @Operation(summary = "Get all rentals", description = "Retrieve all rentals available.", tags = {
+            "Rentals" }, responses = {
+                    @ApiResponse(responseCode = "200", description = "Rentals retrieved.", content = @Content(schema = @Schema(implementation = RentalsResponseDto.class), mediaType = "application/json", examples = @ExampleObject(value = "{\"rentals\" : [{\"id\": 0, \"description\": \"string\", \"name\": \"string\", \"owner_id\": 0, \"picture\": \"string\", \"surface\": 0, \"price\": 0, \"created_at\": \"string\", \"updated_at\": \"string\"}]}"))),
                     @ApiResponse(responseCode = "401", description = "Unauthorized."),
                     @ApiResponse(responseCode = "404", description = "No rentals found.", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), mediaType = "application/json"))
-            }
-    )
-    public ResponseEntity<?> getRentals() { // !!! should return an empty array when no rentals?
+            })
+    public ResponseEntity<?> getRentals() {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            // cycle through the rentals to create a RentalsResponseDto being an array of RentalResponseDto
             Iterable<Rental> rentals = rentalService.getRentals();
+            // cycle through the rentals to create a RentalsResponseDto being an array of
+            // RentalResponseDto
             RentalResponseDto[] rentalsResponse = StreamSupport.stream(rentals.spliterator(), false)
                     .map(rental -> {
                         try {
@@ -73,56 +88,39 @@ public class RentalController {
                         }
                     })
                     .toArray(RentalResponseDto[]::new);
-            return new ResponseEntity<>(new RentalsResponseDto(rentalsResponse), headers, HttpStatus.OK);
-        } catch (Exception exception) {
-            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't find any Rental."), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    // Retrieve the target Rental
-    @GetMapping("/rentals/{id}")
-    @Operation(summary = "Get a specific rental by ID",
-            description = "Retrieves details of a rental based on the provided ID.",
-            tags = {"Rentals"}
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved the rental.", content = @Content(schema = @Schema(implementation = RentalResponseDto.class), mediaType = "application/json")),
-            @ApiResponse(responseCode = "401", description = "Unauthorized."),
-            @ApiResponse(responseCode = "404", description = "Rental not found.", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), mediaType = "application/json"))
-    })
-    public ResponseEntity<?> getRental(@PathVariable("id") final Integer id) {
-        try {
-            Rental rental = rentalService.getRental(id);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            return new ResponseEntity<>(new RentalResponseDto(rental), headers, HttpStatus.OK);
+            return new ResponseEntity<RentalsResponseDto>(new RentalsResponseDto(rentalsResponse), HttpStatus.OK);
         } catch (Exception exception) {
             System.out.println("\u001B[31m" + exception + "\u001B[0m");
-            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't find the requested Rental."), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't find any Rental."),
+                    HttpStatus.NOT_FOUND);
         }
     }
 
     // Update the target Rental
     @PutMapping("/rentals/{id}")
-    @Operation(summary = "Update a Rental",
-            description = "Update details of a rental property by ID",
-            tags = {"Rentals"},
-            responses = {
+    @Operation(summary = "Update a Rental", description = "Update details of a rental property by ID", tags = {
+            "Rentals" }, responses = {
                     @ApiResponse(responseCode = "200", description = "Rental updated successfully.", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), examples = @ExampleObject(value = "{\"message\" : \"Rental updated !\"}"), mediaType = "application/json")),
                     @ApiResponse(responseCode = "400", description = "Invalid input."),
                     @ApiResponse(responseCode = "401", description = "Unauthorized."),
                     @ApiResponse(responseCode = "404", description = "Rental not found.", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), examples = @ExampleObject(value = "{\"message\" : \"Can't update the requested Rental.\"}"), mediaType = "application/json")),
                     @ApiResponse(responseCode = "500", description = "Internal server error.")
             })
-    // public ResponseEntity<?> updateRental(@PathVariable("id") final Integer id, @RequestParam("name") String name, @RequestParam("surface") Integer surface, @RequestParam("price") Integer price, @RequestParam("description") String description) {
-    public ResponseEntity<?> updateRental(@PathVariable("id") final Integer id, @ModelAttribute PayloadPutRentalDto payloadPutRentalDto) {
+    // public ResponseEntity<?> updateRental(@PathVariable("id") final Integer id,
+    // @RequestParam("name") String name, @RequestParam("surface") Integer surface,
+    // @RequestParam("price") Integer price, @RequestParam("description") String
+    // description) {
+    public ResponseEntity<?> updateRental(@PathVariable("id") final Integer id,
+                                          @Valid @ModelAttribute PayloadPutRentalDto payloadPutRentalDto) {
         try {
             Rental rental = rentalService.getRental(id);
 
             if (rental == null) {
-                return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't update the requested Rental."), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<DefaultResponseDto>(
+                        new DefaultResponseDto("Can't update the requested Rental."), HttpStatus.NOT_FOUND);
             }
-            // !!!!!!!!!!! verifier que l'user est bien l'owner de la rental si USER et si ADMIN droit de mod
+            // !!!!!!!!!!! verifier que l'user est bien l'owner de la rental sinon unauthorized si USER et si
+            // ADMIN droit de mod
 
             // data validation through the dto annotations
 
@@ -136,28 +134,35 @@ public class RentalController {
             return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Rental updated !"),
                     HttpStatus.OK);
         } catch (Exception exception) {
+            System.out.println("\u001B[31m" + exception + "\u001B[0m");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // Creating a new Rental
     @PostMapping(value = "/rentals", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Create a Rental",
-            tags = {"Rentals"})
+    @Operation(summary = "Create a Rental", tags = { "Rentals" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Rental created successfully.", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), examples = @ExampleObject(value = "{\"message\" : \"Rental created !\"}"), mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Invalid Input.", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), examples = @ExampleObject(value = "{\"message\" : \"Invalid Input.\"}"), mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized."),
             @ApiResponse(responseCode = "500", description = "Internal server error.")
     })
-    public ResponseEntity<?> createRental(HttpServletRequest request, @RequestParam final String name, @RequestParam final String description, @RequestParam final Integer surface, @RequestParam final Integer price, @RequestBody final MultipartFile picture) { // should all be final?
-    //public ResponseEntity<?> createRental(HttpServletRequest request, @Parameter(description = "Payload Rental DTO", required = true) @ModelAttribute PayloadRentalDto payloadRentalDto/*, @RequestBody final MultipartFile file*/) {
-        try{
-            if (picture.isEmpty()) {
-                return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Invalid Input."), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> createRental(HttpServletRequest request, @RequestParam final String name,
+            @RequestParam final String description, @RequestParam final Integer surface,
+            @RequestParam final Integer price, @RequestBody final MultipartFile picture) {
+        // public ResponseEntity<?> createRental(HttpServletRequest request,
+        // @Parameter(description = "Payload Rental DTO", required = true)
+        // @ModelAttribute PayloadRentalDto payloadRentalDto/*, @RequestBody final
+        // MultipartFile file*/) {
+        try {
+            // !!! Cannot invoke "org.springframework.web.multipart.MultipartFile.isEmpty()" because "picture" is null
+            if (picture == null || picture.isEmpty()) {
+                return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Invalid Input."),
+                        HttpStatus.BAD_REQUEST);
             }
 
-            // validation through the Dto annotations, throws an exception if the validation fails
+            // validating data through the Dto constructor, throws a ConstraintViolationException if the validation fails
             PayloadRentalDto rentalDto = new PayloadRentalDto(name, description, price, surface, picture);
 
             // try saving the picture, throws an exception if the file format is unknown
@@ -177,6 +182,10 @@ public class RentalController {
 
             return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Rental created !"), HttpStatus.OK);
         } catch (Exception exception) {
+            if(exception.getClass().equals(ConstraintViolationException.class)) {
+                return new ResponseEntity<>(new DefaultResponseDto("Invalid Input."), HttpStatus.BAD_REQUEST);
+            }
+            System.out.println("\u001B[31m" + exception + "\u001B[0m");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

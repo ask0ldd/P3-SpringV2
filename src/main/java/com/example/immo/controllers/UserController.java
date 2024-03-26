@@ -2,6 +2,7 @@ package com.example.immo.controllers;
 
 import com.example.immo.dto.responses.TokenResponseDto;
 import com.example.immo.dto.responses.UserResponseDto;
+import com.example.immo.models.User;
 import com.example.immo.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,9 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,11 +35,10 @@ public class UserController {
     })
     public ResponseEntity<?> getUser(@PathVariable("id") final Integer id) {
         try {
-            UserResponseDto user = new UserResponseDto(userService.getUser(id));
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            return new ResponseEntity<>(user, headers, HttpStatus.OK);
+            User user = userService.getUser(id);
+            return new ResponseEntity<UserResponseDto>(new UserResponseDto(user), HttpStatus.OK);
         } catch (Exception exception) {
+            System.out.println("\u001B[31m" + exception + "\u001B[0m");
             return new ResponseEntity<String>("Can't find the requested User.", HttpStatus.NOT_FOUND);
         }
     }
