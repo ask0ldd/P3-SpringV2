@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -49,7 +50,7 @@ public class MessageController {
             @ApiResponse(responseCode = "200", description = "Message sent with success", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), examples = @ExampleObject(value = "{\"message\" : \"Message sent with success.\"}"), mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Bad request / Can't create the target Message.", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), examples = @ExampleObject(value = "{\"message\" : \"Can't create the target Message.\"}"), mediaType = "application/json")),
     })
-    public ResponseEntity<?> createMessage(@RequestBody PayloadMessageDto message, Principal principal) {
+    public ResponseEntity<?> createMessage(@Valid @RequestBody PayloadMessageDto message, Principal principal) {
         try {
             // ignoring the user id from the request body and retrieving the logged user through the principal
             String email = principal.getName();
@@ -62,6 +63,7 @@ public class MessageController {
             return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Message sent with success."),
                     HttpStatus.OK);
         } catch (Exception exception) {
+            System.out.println("\u001B[31m" + exception + "\u001B[0m");
             return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Can't create the target Message."), HttpStatus.BAD_REQUEST);
         }
     }

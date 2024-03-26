@@ -1,7 +1,7 @@
 package com.example.immo.controllers;
 
-import com.example.immo.dto.LoginDto;
-import com.example.immo.dto.RegistrationDto;
+import com.example.immo.dto.payloads.LoginDto;
+import com.example.immo.dto.payloads.RegistrationDto;
 import com.example.immo.dto.responses.DefaultResponseDto;
 import com.example.immo.dto.responses.LoggedUserResponseDto;
 import com.example.immo.dto.responses.TokenResponseDto;
@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -46,13 +47,15 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(examples = @ExampleObject(value = "{ }"))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(examples = @ExampleObject(value = "{ }")))
     })
-    public ResponseEntity<?> userRegister(@RequestBody RegistrationDto body) {
+    public ResponseEntity<?> userRegister(@Valid @RequestBody RegistrationDto body) {
         try {
+            // !!! should validate through dto
             String token = authService.registerUser(body.getEmail(), body.getUsername(), body.getPassword());
             if (token == null)
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             return new ResponseEntity<TokenResponseDto>(new TokenResponseDto(token), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            System.out.println("\u001B[31m" + exception + "\u001B[0m");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -64,21 +67,23 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    public ResponseEntity<?> userLogin(@RequestBody LoginDto body) {
+    public ResponseEntity<?> userLogin(@Valid @RequestBody LoginDto body) {
         try {
             String token = authService.loginUser(body.getEmail(), body.getPassword());
+            // if token == null then credentials don't match any user
             if (token == null)
                 return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("error"), HttpStatus.UNAUTHORIZED);
             return new ResponseEntity<TokenResponseDto>(new TokenResponseDto(token), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            System.out.println("\u001B[31m" + exception + "\u001B[0m");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // Retrieve the infos of the current authenticated User
     // https://www.baeldung.com/get-user-in-spring-security
     // https://www.baeldung.com/spring-security-map-authorities-jwt
     // https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-token-claims
+    // Retrieve the infos of the authenticated User
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get logged in user details", description = "Retrieves information about the currently logged in user.", tags = {"Auth"})
@@ -90,13 +95,17 @@ public class AuthController {
     })
     public ResponseEntity<?> getLoggedUser(Principal principal){
         try {
+            // !!! deal with no principal?
+            // get the email of the authenticated user through the principal
             String email = principal.getName();
+            // retrieve the user
             User loggedUser = userService.getUserByEmail(email);
             if (loggedUser == null) {
                 return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("User not found"), HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<LoggedUserResponseDto>(new LoggedUserResponseDto(loggedUser), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            System.out.println("\u001B[31m" + exception + "\u001B[0m");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
