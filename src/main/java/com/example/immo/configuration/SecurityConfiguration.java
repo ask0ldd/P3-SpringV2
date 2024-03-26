@@ -31,6 +31,7 @@ public class SecurityConfiguration {
         this.jwtDecoder = jwtDecoder;
     }
 
+    // !!! create passwordconfiguration class
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -60,7 +61,7 @@ public class SecurityConfiguration {
                             .requestMatchers(new AntPathRequestMatcher("/api/user/**")).hasAnyRole("USER", "ADMIN")
                             .requestMatchers(new AntPathRequestMatcher("/api/messages")).hasAnyRole("USER", "ADMIN")
                             .requestMatchers(new AntPathRequestMatcher("/auth/*")).hasAnyRole("USER", "ADMIN")
-                            .requestMatchers(new AntPathRequestMatcher("/img/**")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/img/**")).permitAll() //!!!! change permission
                             .requestMatchers(SWAGGER_WHITELIST).permitAll()
                             .anyRequest().authenticated();
                 })
@@ -74,6 +75,9 @@ public class SecurityConfiguration {
     }
 
     // https://www.baeldung.com/spring-security-map-authorities-jwt
+    // Adding a prefix to the roles contained into the JWT.
+    // Ex : JWT Role : "USER" converted to "ROLE_USER".
+    // !!!!!!!! move to JwtConfiguration
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
