@@ -10,19 +10,20 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class RegistrationDto {
+public class PayloadRegistrationDto {
 
     @NotEmpty
     @Size(min=3, max=128, message="The username must be between {min} and {max} characters long")
     private String username;
 
+    @NotEmpty
     @Email(message = "Invalid email format")
     private String email;
 
-    @Size(min=3, max=32, message="The password must be between {min} and {max} characters long")
+    @Size(min=8, max=32, message="The password must be between {min} and {max} characters long")
     private String password;
 
-    public RegistrationDto(String email, String name, String password) {
+    public PayloadRegistrationDto(String email, String name, String password) {
         super();
         this.username = name;
         this.email = email;
