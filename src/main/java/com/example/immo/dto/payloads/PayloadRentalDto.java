@@ -32,7 +32,8 @@ public class PayloadRentalDto extends PayloadBaseRentalDto {
             String name,
             @NotEmpty
             @Size(min=2, max=200, message="The description of the rental must be between {min} and {max} characters long")
-            String description, Integer price, Integer surface, MultipartFile picture){
+            String description, Integer price, Integer surface, MultipartFile picture)
+    {
         this.setName(name);
         this.setDescription(description);
         this.setPrice(price);

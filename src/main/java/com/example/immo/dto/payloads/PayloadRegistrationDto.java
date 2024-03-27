@@ -20,6 +20,7 @@ public class PayloadRegistrationDto {
     @Email(message = "Invalid email format")
     private String email;
 
+    @NotEmpty
     @Size(min=8, max=32, message="The password must be between {min} and {max} characters long")
     private String password;
 
