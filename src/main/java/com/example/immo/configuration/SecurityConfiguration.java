@@ -45,9 +45,9 @@ public class SecurityConfiguration {
         return new ProviderManager(daoProvider);
     }
 
-    // !!!!!!!!!!!!!! protect routes : img for ex
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // csrf disabled cause stateless
         return http.csrf(csrf -> csrf.disable())
                 // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
                 .cors(Customizer.withDefaults())
@@ -61,7 +61,7 @@ public class SecurityConfiguration {
                             .requestMatchers(new AntPathRequestMatcher("/api/user/**")).hasAnyRole("USER", "ADMIN")
                             .requestMatchers(new AntPathRequestMatcher("/api/messages")).hasAnyRole("USER", "ADMIN")
                             .requestMatchers(new AntPathRequestMatcher("/auth/*")).hasAnyRole("USER", "ADMIN")
-                            .requestMatchers(new AntPathRequestMatcher("/img/**")).permitAll() //!!!! change permission
+                            .requestMatchers(new AntPathRequestMatcher("/img/**")).hasAnyRole("USER", "ADMIN")
                             .requestMatchers(SWAGGER_WHITELIST).permitAll()
                             .anyRequest().authenticated();
                 })

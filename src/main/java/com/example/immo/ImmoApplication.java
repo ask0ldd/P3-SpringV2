@@ -27,10 +27,10 @@ public class ImmoApplication implements CommandLineRunner { // !!! commandlineru
 		// emptying the folder containing all the uploaded pictures
 		fileSystemService.deleteAllFiles();
 		// init role table
-		roleRepository.findByAuthority("ADMIN").ifPresentOrElse(a -> {}, () -> {
+		/*roleRepository.findByAuthority("ADMIN").ifPresentOrElse(a -> {}, () -> {
 			roleRepository.save(new Role("ADMIN"));
 			roleRepository.save(new Role("USER"));
-		});
+		});*/
 	}
 
 }
