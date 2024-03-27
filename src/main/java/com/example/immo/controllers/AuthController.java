@@ -1,7 +1,7 @@
 package com.example.immo.controllers;
 
-import com.example.immo.dto.payloads.LoginDto;
-import com.example.immo.dto.payloads.RegistrationDto;
+import com.example.immo.dto.payloads.PayloadLoginDto;
+import com.example.immo.dto.payloads.PayloadRegistrationDto;
 import com.example.immo.dto.responses.DefaultResponseDto;
 import com.example.immo.dto.responses.LoggedUserResponseDto;
 import com.example.immo.dto.responses.TokenResponseDto;
@@ -47,9 +47,10 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(examples = @ExampleObject(value = "{ }"))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(examples = @ExampleObject(value = "{ }")))
     })
-    public ResponseEntity<?> userRegister(@Valid @RequestBody RegistrationDto body) {
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "register body", content = @Content(examples = @ExampleObject(value = "{ \"name\" : \"ced\", \"email\" : \"ced@ced.com\", \"password\" : \"cedcedced\" }")))
+    public ResponseEntity<?> userRegister(@Valid @RequestBody PayloadRegistrationDto body) {
         try {
-            // !!! should validate through dto
+            // @Valid validates request body datas through dto
             String token = authService.registerUser(body.getEmail(), body.getUsername(), body.getPassword());
             if (token == null)
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -67,7 +68,8 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    public ResponseEntity<?> userLogin(@Valid @RequestBody LoginDto body) {
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "login body", content = @Content(examples = @ExampleObject(value = "{ \"email\" : \"ced@ced.com\", \"password\" : \"cedcedced\" }")))
+    public ResponseEntity<?> userLogin(@Valid @RequestBody PayloadLoginDto body) {
         try {
             String token = authService.loginUser(body.getEmail(), body.getPassword());
             // if token == null then credentials don't match any user
