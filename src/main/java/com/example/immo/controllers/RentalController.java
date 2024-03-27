@@ -23,11 +23,15 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.text.ParseException;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -106,12 +110,8 @@ public class RentalController {
                     @ApiResponse(responseCode = "404", description = "Rental not found.", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), examples = @ExampleObject(value = "{\"message\" : \"Can't update the requested Rental.\"}"), mediaType = "application/json")),
                     @ApiResponse(responseCode = "500", description = "Internal server error.")
             })
-    // public ResponseEntity<?> updateRental(@PathVariable("id") final Integer id,
-    // @RequestParam("name") String name, @RequestParam("surface") Integer surface,
-    // @RequestParam("price") Integer price, @RequestParam("description") String
-    // description) {
     public ResponseEntity<?> updateRental(@PathVariable("id") final Integer id,
-                                          @Valid @ModelAttribute PayloadPutRentalDto payloadPutRentalDto) {
+                                          @Valid @ModelAttribute PayloadPutRentalDto payloadPutRentalDto, Authentication authentication, Principal principal) {
         try {
             Rental rental = rentalService.getRental(id);
 
@@ -119,10 +119,16 @@ public class RentalController {
                 return new ResponseEntity<DefaultResponseDto>(
                         new DefaultResponseDto("Can't update the requested Rental."), HttpStatus.NOT_FOUND);
             }
-            // !!!!!!!!!!! verifier que l'user est bien l'owner de la rental sinon unauthorized si USER et si
-            // ADMIN droit de mod
 
-            // data validation through the dto annotations
+            // check if the authenticated user is an admin
+            // if not, check if his email match the email of the rental owner
+            // if both verififications failed then unauthorized
+            if(!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
+                if(!Objects.equals(rental.getOwner().getEmail(), principal.getName()))
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+
+            // data validation is done through some dto annotations
 
             rental.setName(payloadPutRentalDto.getName());
             rental.setSurface(payloadPutRentalDto.getSurface());
