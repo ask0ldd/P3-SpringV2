@@ -1,7 +1,5 @@
 package com.example.immo.configuration;
 
-import com.example.immo.utils.KeyGeneratorUtility;
-import lombok.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

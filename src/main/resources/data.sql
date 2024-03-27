@@ -1,1 +1,1 @@
-INSERT INTO `roles` (`authority`) VALUES ('Admin'), ('User');
+INSERT INTO `roles` (`authority`) VALUES ('ADMIN'), ('USER');
