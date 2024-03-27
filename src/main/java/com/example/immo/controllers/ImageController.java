@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("img")
 @CrossOrigin(origins = "http://localhost:4200")
-// @SecurityRequirement(name = "bearerAuth")
+@SecurityRequirement(name = "bearerAuth")
 public class ImageController {
 
     private final FileSystemService fileSystemService;
@@ -35,6 +36,7 @@ public class ImageController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Image served.", content = { @Content(mediaType = "image/png"), @Content(mediaType = "image/jpeg") }),
             @ApiResponse(responseCode = "404", description = "Image not found."),
+            @ApiResponse(responseCode = "406", description = "Not a valid Image."),
     })
     public ResponseEntity<?> serveImage(@PathVariable String imageName) {
         try {
@@ -46,10 +48,13 @@ public class ImageController {
                 String mimeType = Files.probeContentType(path);
                 creer une classe getContentType dans FileSystemService to check the type
             */
-            String contentType = "image/jpeg";
-            if(Objects.requireNonNull(resource.getFilename()).contains(".png")) contentType = "image/png";
             // send back a response with a header matching the image type
             if (resource.exists() || resource.isReadable()) {
+                String contentType = "";
+                // check mimetype instead
+                if(Objects.requireNonNull(resource.getFilename()).contains(".jpg")) contentType = "image/jpeg";
+                if(Objects.requireNonNull(resource.getFilename()).contains(".png")) contentType = "image/png";
+                if(contentType.isEmpty()) return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Not a valid Image."), HttpStatus.NOT_ACCEPTABLE);
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_TYPE, contentType)
                         .body(resource);

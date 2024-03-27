@@ -1,17 +1,20 @@
 package com.example.immo.models;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
-@AllArgsConstructor // generate constructor with all args
-@NoArgsConstructor // generate constructor with no args
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
-@Entity(name = "messages")
 @Builder
+@Entity(name = "messages")
 @Table(name = "messages")
 // @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 public class Message {
@@ -39,14 +42,5 @@ public class Message {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date update;
-
-    /*
-     * public Message(Long messageId, Long sender, Long recipient, String body) {
-     * this.messageId = messageId;
-     * this.sender = sender;
-     * this.recipient = recipient;
-     * this.body = body;
-     * }
-     */
 
 }
