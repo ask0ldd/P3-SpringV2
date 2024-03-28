@@ -25,7 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -157,10 +156,6 @@ public class RentalController {
     public ResponseEntity<?> createRental(HttpServletRequest request, @RequestParam final String name,
             @RequestParam final String description, @RequestParam final Integer surface,
             @RequestParam final Integer price, @RequestBody final MultipartFile picture) {
-        // public ResponseEntity<?> createRental(HttpServletRequest request,
-        // @Parameter(description = "Payload Rental DTO", required = true)
-        // @ModelAttribute PayloadRentalDto payloadRentalDto/*, @RequestBody final
-        // MultipartFile file*/) {
         try {
             // !!! Cannot invoke "org.springframework.web.multipart.MultipartFile.isEmpty()" because "picture" is null
             if (picture == null || picture.isEmpty()) {
