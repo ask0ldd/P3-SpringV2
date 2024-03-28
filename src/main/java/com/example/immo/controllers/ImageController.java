@@ -51,7 +51,7 @@ public class ImageController {
             // send back a response with a header matching the image type
             if (resource.exists() || resource.isReadable()) {
                 String contentType = "";
-                // check mimetype instead
+                // !!!! check mimetype instead
                 if(Objects.requireNonNull(resource.getFilename()).contains(".jpg")) contentType = "image/jpeg";
                 if(Objects.requireNonNull(resource.getFilename()).contains(".png")) contentType = "image/png";
                 if(contentType.isEmpty()) return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Not a valid Image."), HttpStatus.NOT_ACCEPTABLE);
