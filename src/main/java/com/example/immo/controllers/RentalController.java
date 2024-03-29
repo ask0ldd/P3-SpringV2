@@ -159,7 +159,7 @@ public class RentalController {
         try {
             // !!! Cannot invoke "org.springframework.web.multipart.MultipartFile.isEmpty()" because "picture" is null
             if (picture == null || picture.isEmpty()) {
-                return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Invalid Input."),
+                return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Invalid Picture."),
                         HttpStatus.BAD_REQUEST);
             }
 
