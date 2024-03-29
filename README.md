@@ -145,7 +145,7 @@ First you need to install these softwares, packages and librairies :
     The following connection should already be set up : 
        Local Instance MySQL80 / user : root / url : localhost:3306.
     ```
-5. Create an "immo" empty schema with Workbench. All the tables will be created by Spring JPA when running the application. You don't need to do more.
+5. Create an "immo" empty schema with Workbench. You don't need to do more since all the mandatory tables will be created by Spring JPA when starting up the project.
 
 6. Build the project.
     ```
@@ -181,6 +181,6 @@ After launching the server, go to the following url :
 
     http://127.0.0.1:3001/swagger-ui/index.html
 
-Don't forget to register and paste the returned JWT to if you want to access the protected resources.
+Don't forget to register and use the returned JWT to authenticate yourself.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

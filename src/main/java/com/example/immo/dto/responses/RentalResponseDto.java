@@ -10,8 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
-@Setter
-@Getter
 public class RentalResponseDto {
     private Integer id;
     private String description;

@@ -7,8 +7,6 @@ import lombok.Setter;
 
 import java.text.ParseException;
 
-@Getter
-@Setter
 @Data
 public class MessageResponseDto {
     private Integer messageId;

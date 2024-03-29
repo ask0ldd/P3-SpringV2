@@ -11,8 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
-@Getter
-@Setter
 @Schema(type = "object", requiredProperties = {"name", "surface", "price", "description"})
 public class PayloadBaseRentalDto {
 
