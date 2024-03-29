@@ -28,17 +28,17 @@ public class FileSystemService implements IFileSystemService {
     public String saveImg(MultipartFile file) {
         String dir = System.getProperty("user.dir") + "/src/main/resources/static/" + filePath;
         try {
-            String filename = "";
-            // check if png or jpg file & generate a unique filename
-            if(Objects.equals(file.getContentType(), "image/jpeg")) filename = UniqueFilenameGenerator.generate("img-", ".jpg");
-            if(Objects.equals(file.getContentType(), "image/png")) filename = UniqueFilenameGenerator.generate("img-", ".png");
-            // if no filename has been assigned, then the file type is not supported
-            if(filename.isEmpty()) throw new UnsupportedFileTypeException("Unsupported File Type.");
+            // generates an extension for the file to be saved
+            // if null => unsupported file type
+            String extension = generateFileExtension(file);
+            if(extension == null) throw new UnsupportedFileTypeException("Unsupported File Type.");
+            // generates a unique filename
+            String filename = UniqueFilenameGenerator.generate("img-", extension);
             file.transferTo(new File(dir + filename));
             return filename;
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error saving image: " + e.getMessage(), e);
         }
     }
 
@@ -59,5 +59,19 @@ public class FileSystemService implements IFileSystemService {
         } catch (IOException e) {
             System.err.println("Failed to create directory: " + e.getMessage());
         }
+    }
+
+    // if the file is a png or a jpg : an extension is generated
+    // if not : null is returned
+    private String generateFileExtension(MultipartFile file) {
+        String contentType = file.getContentType();
+        if (contentType == null) {
+            return null;
+        }
+        return switch (contentType) {
+            case "image/jpeg" -> ".jpg";
+            case "image/png" -> ".png";
+            default -> null;
+        };
     }
 }
