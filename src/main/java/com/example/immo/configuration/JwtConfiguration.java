@@ -13,6 +13,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
@@ -26,7 +28,7 @@ public class JwtConfiguration {
     private final RSAPrivateKey privateKey;
 
     // https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets
-    public JwtConfiguration(){
+    public JwtConfiguration() {
         KeyPair rsaKeys = KeyGeneratorUtility.generateRSAKeys();
         this.publicKey = (RSAPublicKey) rsaKeys.getPublic();
         this.privateKey = (RSAPrivateKey) rsaKeys.getPrivate();
@@ -43,5 +45,17 @@ public class JwtConfiguration {
         JWK jwk = new RSAKey.Builder(publicKey).privateKey(privateKey).build();
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
+    }
+
+    // Adding a prefix to the roles contained into the JWT.
+    // Ex : JWT Role : "USER" converted to "ROLE_USER".
+    @Bean
+    JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+        jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        return jwtConverter;
     }
 }
