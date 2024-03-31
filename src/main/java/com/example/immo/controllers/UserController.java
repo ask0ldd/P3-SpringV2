@@ -30,7 +30,7 @@ public class UserController {
     @GetMapping("/user/{id}")
     @Operation(summary = "Retrieve a target user", description = "Endpoint to retrieved a target user.", tags = {"User"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User retrieved.", content = @Content(schema = @Schema(implementation = TokenResponseDto.class))),
+            @ApiResponse(responseCode = "200", description = "User retrieved.", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "User not found."),
     })
     public ResponseEntity<?> getUser(@PathVariable("id") final Integer id) {
