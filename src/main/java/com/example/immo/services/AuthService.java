@@ -38,6 +38,7 @@ public class AuthService implements IAuthService {
 
     public String registerUser(String email, String username, String password) {
         try {
+            // the password of the registering user has to be encoded before its insertion into the DB
             String encodedPassword = passwordEncoder.encode(password);
 
             Role userRole = roleRepository.findByAuthority("USER")
@@ -48,8 +49,11 @@ public class AuthService implements IAuthService {
             userRepository.save(new User(null, username, email,
                     encodedPassword, authorities));
 
+            // authenticates the user
+            // Authentication : Set by an AuthenticationManager to indicate the authorities that the principal has been granted
             Authentication auth = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(email, password));
+            // produces a JWT based on the Authentication produced for the authenticated user
             return tokenService.generateJwt(auth);
         } catch (AuthenticationException e) {
             return null;

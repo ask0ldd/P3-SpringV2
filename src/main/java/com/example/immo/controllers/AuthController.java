@@ -82,9 +82,6 @@ public class AuthController {
         }
     }
 
-    // https://www.baeldung.com/get-user-in-spring-security
-    // https://www.baeldung.com/spring-security-map-authorities-jwt
-    // https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-token-claims
     // Retrieve the infos of the authenticated User
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
@@ -112,3 +109,7 @@ public class AuthController {
         }
     }
 }
+
+// https://www.baeldung.com/get-user-in-spring-security
+// https://www.baeldung.com/spring-security-map-authorities-jwt
+// https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-token-claims

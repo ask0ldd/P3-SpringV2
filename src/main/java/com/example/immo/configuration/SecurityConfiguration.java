@@ -45,6 +45,7 @@ public class SecurityConfiguration {
                 // .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .authorizeHttpRequests(authorize -> {
                     authorize
+                            // all routes but login, register & swaggers needs to be authenticated
                             .requestMatchers(new AntPathRequestMatcher("/api/auth/login")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/api/auth/register")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/api/auth/me")).hasAnyRole("USER", "ADMIN")
@@ -77,6 +78,7 @@ public class SecurityConfiguration {
             "/api/v1/auth/**",
     };
 
+    // this will encode the user's
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -87,3 +89,4 @@ public class SecurityConfiguration {
 // https://www.baeldung.com/spring-security-map-authorities-jwt
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 // https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html
+// https://www.baeldung.com/spring-security-oauth-resource-server

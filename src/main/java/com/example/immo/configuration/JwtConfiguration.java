@@ -23,11 +23,10 @@ import java.security.interfaces.RSAPublicKey;
 @Configuration
 public class JwtConfiguration {
 
-    // https://github.com/spring-projects/spring-security-samples/blob/6.2.x/servlet/spring-boot/java/oauth2/resource-server/static/src/main/java/example/OAuth2ResourceServerSecurityConfiguration.java
     private final RSAPublicKey publicKey;
     private final RSAPrivateKey privateKey;
 
-    // https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets
+    // Generating a pair of keys
     public JwtConfiguration() {
         KeyPair rsaKeys = KeyGeneratorUtility.generateRSAKeys();
         this.publicKey = (RSAPublicKey) rsaKeys.getPublic();
@@ -39,7 +38,7 @@ public class JwtConfiguration {
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
 
-    // https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html
+    // configuring the encoder used to sign the JWT
     @Bean
     JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(publicKey).privateKey(privateKey).build();
@@ -47,8 +46,8 @@ public class JwtConfiguration {
         return new NimbusJwtEncoder(jwks);
     }
 
-    // Adding a prefix to the roles contained into the JWT.
-    // Ex : JWT Role : "USER" converted to "ROLE_USER".
+    // Adding a prefix to the roles claim contained into the JWT.
+    // Ex : JWT Role : "USER" -> "ROLE_USER".
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
@@ -59,3 +58,7 @@ public class JwtConfiguration {
         return jwtConverter;
     }
 }
+
+// https://github.com/spring-projects/spring-security-samples/blob/6.2.x/servlet/spring-boot/java/oauth2/resource-server/static/src/main/java/example/OAuth2ResourceServerSecurityConfiguration.java
+// https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets
+// https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html
