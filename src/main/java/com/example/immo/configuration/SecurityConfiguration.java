@@ -90,3 +90,4 @@ public class SecurityConfiguration {
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 // https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html
 // https://www.baeldung.com/spring-security-oauth-resource-server
+// https://docs.spring.io/spring-security-oauth2-boot/docs/2.1.0.M2/reference/html/downloading.html
