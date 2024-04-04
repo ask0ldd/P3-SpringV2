@@ -5,6 +5,7 @@ import com.example.immo.dto.payloads.PayloadRentalDto;
 import com.example.immo.dto.responses.DefaultResponseDto;
 import com.example.immo.dto.responses.RentalResponseDto;
 import com.example.immo.dto.responses.RentalsResponseDto;
+import com.example.immo.exceptions.RentalNotFoundException;
 import com.example.immo.models.Rental;
 import com.example.immo.models.User;
 import com.example.immo.services.FileSystemService;
@@ -140,6 +141,8 @@ public class RentalController {
                     HttpStatus.OK);
         } catch (Exception exception) {
             System.out.println("\u001B[31m" + exception + "\u001B[0m");
+            if (exception instanceof RentalNotFoundException) return new ResponseEntity<DefaultResponseDto>(
+                    new DefaultResponseDto("Can't update the requested Rental."), HttpStatus.NOT_FOUND);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
