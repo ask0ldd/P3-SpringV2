@@ -10,11 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ImmoApplication implements CommandLineRunner { // !!! commandlinerunner added soutenance
 
-	private final RoleRepository roleRepository;
 	private final FileSystemService fileSystemService;
 
-	public ImmoApplication(RoleRepository roleRepository, FileSystemService fileSystemService) {
-		this.roleRepository = roleRepository;
+	public ImmoApplication(FileSystemService fileSystemService) {
 		this.fileSystemService = fileSystemService;
 	}
 
@@ -26,15 +24,6 @@ public class ImmoApplication implements CommandLineRunner { // !!! commandlineru
 	public void run(String... args) throws Exception {
 		// emptying the folder containing all the uploaded pictures
 		fileSystemService.deleteAllFiles();
-		// init role table
-		/*roleRepository.findByAuthority("ADMIN").ifPresentOrElse(a -> {}, () -> {
-			roleRepository.save(new Role("ADMIN"));
-			roleRepository.save(new Role("USER"));
-		});*/
 	}
 
 }
-
-// System.out.println("\u001B[31m" + username + "\u001B[0m");
-
-// data sql
