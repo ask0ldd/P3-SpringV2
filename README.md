@@ -45,11 +45,7 @@ School work : A basic platform enabling individuals to post rental listings.
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+A basic platform enabling individuals to post rental listings.
 
 
 
@@ -65,13 +61,22 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- GETTING STARTED -->
 ## Getting Started
 
 To run the app, you will need to clone two repositories. One for the front-end and the current one for the back-end.
 
 In case you wouldn't want to install the front-end, you could simply test the back-end using the following swagger : http://127.0.0.1:3001/swagger-ui/index.html after installing and running the back-end.
+
+* the back end repository :
+   ```
+   git clone https://github.com/ask0ldd/P3-SpringV2.git
+   ```
+
+* The front end repository
+   ```
+    git clone https://github.com/OpenClassrooms-Student-Center/Developpez-le-back-end-en-utilisant-Java-et-Spring.git
+   ```
 
 ### Prerequisites
 
@@ -170,7 +175,7 @@ First you need to install these softwares, packages and librairies :
 * Update an existing rental listing.
 * Browse all posted rental listings.
 * View full details of a specific rental listing.
-* Leave a message for a rental property landlord.
+* Leave a message to a rental property landlord.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
