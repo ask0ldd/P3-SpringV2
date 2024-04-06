@@ -53,7 +53,7 @@ public class SecurityConfiguration {
                             .requestMatchers(new AntPathRequestMatcher("/api/user/**")).hasAnyRole("USER", "ADMIN")
                             .requestMatchers(new AntPathRequestMatcher("/api/messages")).hasAnyRole("USER", "ADMIN")
                             .requestMatchers(new AntPathRequestMatcher("/auth/*")).hasAnyRole("USER", "ADMIN")
-                            .requestMatchers(new AntPathRequestMatcher("/img/**")).hasAnyRole("USER", "ADMIN")
+                            .requestMatchers(new AntPathRequestMatcher("/img/**")).permitAll()
                             .requestMatchers(SWAGGER_WHITELIST).permitAll()
                             .anyRequest().authenticated();
                 })
@@ -84,10 +84,3 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 }
-
-// https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets
-// https://www.baeldung.com/spring-security-map-authorities-jwt
-// https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-// https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html
-// https://www.baeldung.com/spring-security-oauth-resource-server
-// https://docs.spring.io/spring-security-oauth2-boot/docs/2.1.0.M2/reference/html/downloading.html

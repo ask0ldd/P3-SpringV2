@@ -58,7 +58,3 @@ public class JwtConfiguration {
         return jwtConverter;
     }
 }
-
-// https://github.com/spring-projects/spring-security-samples/blob/6.2.x/servlet/spring-boot/java/oauth2/resource-server/static/src/main/java/example/OAuth2ResourceServerSecurityConfiguration.java
-// https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets
-// https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html
