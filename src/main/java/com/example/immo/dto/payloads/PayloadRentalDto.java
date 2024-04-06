@@ -8,15 +8,10 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Schema(type = "object", requiredProperties = {"name", "surface", "price", "description", "picture"})
