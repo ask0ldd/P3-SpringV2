@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 public class ImageController {
 
     private final FileSystemService fileSystemService;
-
     public ImageController(FileSystemService fileSystemService) {
         this.fileSystemService = fileSystemService;
     }
@@ -42,22 +41,14 @@ public class ImageController {
         try {
             // get the image as a resource
             Resource resource = fileSystemService.getImgResource(imageName);
-            // check if the image is a jpg or a png
-            /*
-                Path path = new File("product.png").toPath();
-                String mimeType = Files.probeContentType(path);
-                creer une classe getContentType dans FileSystemService to check the type
-            */
-            // send back a response with a header matching the image type
             if (resource.exists() || resource.isReadable()) {
-                String contentType = "";
-                // !!!! check mimetype instead
-                if(Objects.requireNonNull(resource.getFilename()).contains(".jpg")) contentType = "image/jpeg";
-                if(Objects.requireNonNull(resource.getFilename()).contains(".png")) contentType = "image/png";
-                if(contentType.isEmpty()) return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Not a valid Image."), HttpStatus.NOT_ACCEPTABLE);
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_TYPE, contentType)
-                        .body(resource);
+                // check if the image is a jpg or a png
+                String mimeType = resource.getURL().openConnection().getContentType();
+                // if not
+                if(!Objects.equals(mimeType, "image/jpeg") && !Objects.equals(mimeType, "image/png"))
+                    return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Not a valid Image."), HttpStatus.NOT_ACCEPTABLE);
+                // & send back a response with a header matching the image type
+                return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, mimeType).body(resource);
             } else {
                 return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("This image can't be found."), HttpStatus.NOT_FOUND);
             }
