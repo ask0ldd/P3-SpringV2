@@ -1,8 +1,6 @@
 package com.example.immo.dto.responses;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 public class RentalsResponseDto {

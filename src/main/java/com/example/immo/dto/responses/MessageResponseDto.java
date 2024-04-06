@@ -2,8 +2,6 @@ package com.example.immo.dto.responses;
 
 import com.example.immo.models.Message;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.text.ParseException;
 
