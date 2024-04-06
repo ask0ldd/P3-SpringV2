@@ -120,9 +120,8 @@ public class RentalController {
                         new DefaultResponseDto("Can't update the requested Rental."), HttpStatus.NOT_FOUND);
             }
 
-            // check if the authenticated user is an admin
-            // if not, check if his email match the email of the rental owner
-            // if both verififications failed then unauthorized
+            // the authenticated user needs to be an admin or the owner of the rental
+            // to be able to update it
             if(!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
                 if(!Objects.equals(rental.getOwner().getEmail(), principal.getName()))
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

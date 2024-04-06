@@ -38,18 +38,18 @@ public class AuthService implements IAuthService {
 
     public String registerUser(String email, String username, String password) {
         try {
-            // the password of the registering user has to be encoded before its insertion into the DB
+            // the password of the user being registered has to be encoded before its insertion into the DB
             String encodedPassword = passwordEncoder.encode(password);
 
             Role userRole = roleRepository.findByAuthority("USER")
-                    .orElseThrow(() -> new RuntimeException("User role not found")); // .get()
+                    .orElseThrow(() -> new RuntimeException("User role not found"));
             Set<Role> authorities = new HashSet<>();
             authorities.add(userRole);
 
             userRepository.save(new User(null, username, email,
                     encodedPassword, authorities));
 
-            // authenticates the user
+            // try to authenticate the user using email and password
             // Authentication : Set by an AuthenticationManager to indicate the authorities that the principal has been granted
             Authentication auth = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(email, password));

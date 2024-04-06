@@ -9,8 +9,6 @@ import com.example.immo.models.Rental;
 import com.example.immo.repositories.RentalRepository;
 import com.example.immo.services.interfaces.IRentalService;
 
-import lombok.Data;
-
 @Service
 public class RentalService implements IRentalService {
 

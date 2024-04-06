@@ -33,6 +33,7 @@ public class TokenService implements ITokenService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
+                // the JWT expires after 1 day
                 .expiresAt(now.plus(1, ChronoUnit.DAYS))
                 .subject(authentication.getName())
                 .claim("roles", scope)
