@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("img")
 @CrossOrigin(origins = "http://localhost:4200")
-@SecurityRequirement(name = "bearerAuth")
 public class ImageController {
 
     private final FileSystemService fileSystemService;
