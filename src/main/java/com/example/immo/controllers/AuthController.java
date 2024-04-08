@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +29,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("api/auth")
-@CrossOrigin(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = { "http://localhost:4200" })
 public class AuthController {
 
     private final AuthService authService;
@@ -42,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    @Operation(summary = "Register a new user", description = "Endpoint to register a new user.", tags = {"Auth"})
+    @Operation(summary = "Register a new user", description = "Endpoint to register a new user.", tags = { "Auth" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful registration", content = @Content(schema = @Schema(implementation = TokenResponseDto.class), mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(examples = @ExampleObject(value = "{ }"))),
@@ -63,7 +62,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "User Login", description = "Endpoint for user login", tags = {"Auth"})
+    @Operation(summary = "User Login", description = "Endpoint for user login", tags = { "Auth" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful login", content = @Content(schema = @Schema(implementation = TokenResponseDto.class), mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), mediaType = "application/json")),
@@ -86,21 +85,23 @@ public class AuthController {
     // Retrieve the infos of the authenticated User
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Get logged in user details", description = "Retrieves information about the currently logged in user.", tags = {"Auth"})
+    @Operation(summary = "Get logged in user details", description = "Retrieves information about the currently logged in user.", tags = {
+            "Auth" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Informations retrieved", content = @Content(schema = @Schema(implementation = LoggedUserResponseDto.class), mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized."),
             @ApiResponse(responseCode = "404", description = "User not Found", content = @Content(schema = @Schema(implementation = DefaultResponseDto.class), mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    public ResponseEntity<?> getLoggedUser(Principal principal){
+    public ResponseEntity<?> getLoggedUser(Principal principal) {
         try {
             // get the email of the authenticated user through the principal
             String email = principal.getName();
             // retrieve the user
             User loggedUser = userService.getUserByEmail(email);
             if (loggedUser == null) {
-                return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("User not found"), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("User not found"),
+                        HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<LoggedUserResponseDto>(new LoggedUserResponseDto(loggedUser), HttpStatus.OK);
         } catch (Exception exception) {

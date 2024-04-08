@@ -6,17 +6,13 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
-@Schema(type = "object", requiredProperties = {"name", "surface", "price", "description", "picture"})
+@Schema(type = "object", requiredProperties = { "name", "surface", "price", "description", "picture" })
 public class PayloadRentalDto extends PayloadBaseRentalDto {
 
     @Schema(description = "Picture of the rental", type = "string", format = "binary")
@@ -28,8 +24,7 @@ public class PayloadRentalDto extends PayloadBaseRentalDto {
             String description,
             Integer price,
             Integer surface,
-            MultipartFile picture)
-    {
+            MultipartFile picture) {
         this.setName(name);
         this.setDescription(description);
         this.setPrice(price);

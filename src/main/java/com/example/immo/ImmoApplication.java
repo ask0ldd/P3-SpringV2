@@ -1,7 +1,5 @@
 package com.example.immo;
 
-import com.example.immo.models.Role;
-import com.example.immo.repositories.RoleRepository;
 import com.example.immo.services.FileSystemService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

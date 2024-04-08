@@ -12,7 +12,6 @@ import com.example.immo.services.FileSystemService;
 import com.example.immo.services.RentalService;
 import com.example.immo.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -112,7 +111,8 @@ public class RentalController {
                     @ApiResponse(responseCode = "500", description = "Internal server error.")
             })
     public ResponseEntity<?> updateRental(@PathVariable("id") final Integer id,
-                                          @Valid @ModelAttribute PayloadPutRentalDto payloadPutRentalDto, Authentication authentication, Principal principal) {
+            @Valid @ModelAttribute PayloadPutRentalDto payloadPutRentalDto, Authentication authentication,
+            Principal principal) {
         try {
             Rental rental = rentalService.getRental(id);
 
@@ -123,8 +123,8 @@ public class RentalController {
 
             // the authenticated user needs to be an admin or the owner of the rental
             // to be able to update it
-            if(!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
-                if(!Objects.equals(rental.getOwner().getEmail(), principal.getName()))
+            if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+                if (!Objects.equals(rental.getOwner().getEmail(), principal.getName()))
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
@@ -141,8 +141,9 @@ public class RentalController {
                     HttpStatus.OK);
         } catch (Exception exception) {
             System.out.println("\u001B[31m" + exception + "\u001B[0m");
-            if (exception instanceof RentalNotFoundException) return new ResponseEntity<DefaultResponseDto>(
-                    new DefaultResponseDto("Can't update the requested Rental."), HttpStatus.NOT_FOUND);
+            if (exception instanceof RentalNotFoundException)
+                return new ResponseEntity<DefaultResponseDto>(
+                        new DefaultResponseDto("Can't update the requested Rental."), HttpStatus.NOT_FOUND);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -157,19 +158,19 @@ public class RentalController {
             @ApiResponse(responseCode = "500", description = "Internal server error.")
     })
     public ResponseEntity<?> createRental(HttpServletRequest request,
-                                          @RequestParam final String name,
-                                          @RequestParam final String description,
-                                          @RequestParam final Integer surface,
-                                          @RequestParam final Integer price,
-                                          @RequestPart(required = true) final MultipartFile picture)
-    {
+            @RequestParam final String name,
+            @RequestParam final String description,
+            @RequestParam final Integer surface,
+            @RequestParam final Integer price,
+            @RequestPart(required = true) final MultipartFile picture) {
         try {
             if (picture == null || picture.isEmpty()) {
                 return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Invalid Picture."),
                         HttpStatus.BAD_REQUEST);
             }
 
-            // validating data through the Dto constructor, throws a ConstraintViolationException if the validation fails
+            // validating data through the Dto constructor, throws a
+            // ConstraintViolationException if the validation fails
             PayloadRentalDto rentalDto = new PayloadRentalDto(name, description, price, surface, picture);
 
             // try saving the picture, throws an exception if the file format is unknown
@@ -189,7 +190,7 @@ public class RentalController {
 
             return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Rental created !"), HttpStatus.OK);
         } catch (Exception exception) {
-            if(exception.getClass().equals(ConstraintViolationException.class)) {
+            if (exception.getClass().equals(ConstraintViolationException.class)) {
                 return new ResponseEntity<>(new DefaultResponseDto("Invalid Input."), HttpStatus.BAD_REQUEST);
             }
             System.out.println("\u001B[31m" + exception + "\u001B[0m");

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 
 import com.example.immo.exceptions.UnsupportedFileTypeException;
 import com.example.immo.services.interfaces.IFileSystemService;
@@ -31,7 +30,8 @@ public class FileSystemService implements IFileSystemService {
             // generates an extension for the file to be saved
             // if null => unsupported file type
             String extension = generateFileExtension(file);
-            if(extension == null) throw new UnsupportedFileTypeException("Unsupported File Type.");
+            if (extension == null)
+                throw new UnsupportedFileTypeException("Unsupported File Type.");
             // generates a unique filename
             String filename = UniqueFilenameGenerator.generate("img-", extension);
             file.transferTo(new File(dir + filename));
@@ -42,7 +42,7 @@ public class FileSystemService implements IFileSystemService {
         }
     }
 
-    public Resource getImgResource(String fileName) throws IOException{
+    public Resource getImgResource(String fileName) throws IOException {
         String IMAGE_FOLDER = System.getProperty("user.dir") + "/src/main/resources/static/" + filePath;
         Path imagePath = Paths.get(IMAGE_FOLDER).resolve(fileName);
         return new UrlResource(imagePath.toUri());

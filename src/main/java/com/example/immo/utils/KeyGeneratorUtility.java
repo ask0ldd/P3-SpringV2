@@ -1,7 +1,5 @@
 package com.example.immo.utils;
 
-import org.springframework.context.annotation.Bean;
-
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 

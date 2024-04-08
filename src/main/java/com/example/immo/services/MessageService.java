@@ -5,7 +5,6 @@ import java.util.Optional;
 import com.example.immo.exceptions.MessageNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.immo.exceptions.UserNotFoundException;
 import com.example.immo.models.Message;
 import com.example.immo.repositories.MessageRepository;
 import com.example.immo.services.interfaces.IMessageService;

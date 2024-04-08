@@ -1,6 +1,5 @@
 package com.example.immo.controllers;
 
-import com.example.immo.dto.responses.TokenResponseDto;
 import com.example.immo.dto.responses.UserResponseDto;
 import com.example.immo.models.User;
 import com.example.immo.services.UserService;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api")
-@CrossOrigin(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = { "http://localhost:4200" })
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
@@ -28,7 +27,8 @@ public class UserController {
 
     // Retrieve the target User
     @GetMapping("/user/{id}")
-    @Operation(summary = "Retrieve a target user", description = "Endpoint to retrieved a target user.", tags = {"User"})
+    @Operation(summary = "Retrieve a target user", description = "Endpoint to retrieved a target user.", tags = {
+            "User" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User retrieved.", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "User not found."),
