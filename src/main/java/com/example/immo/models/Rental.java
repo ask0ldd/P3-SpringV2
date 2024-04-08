@@ -1,6 +1,9 @@
 package com.example.immo.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -25,9 +28,11 @@ public class Rental {
     private User owner;
 
     @Column(name = "name", nullable = false, length = 255)
+    @Size(min = 2, message = "Name must be at least 2 characters long")
     private String name;
 
     @Column(name = "description", nullable = false, length = 2000)
+    @Size(min = 2, message = "Description must be at least 2 characters long")
     private String description;
 
     @Column(name = "picture", length = 255)
@@ -37,9 +42,13 @@ public class Rental {
     private List<Message> messages;
 
     @Column(name = "surface")
+    @Min(value = 0, message = "Surface must be at least 0")
+    @Max(value = 1000, message = "Surface must not exceed 1000")
     private Integer surface;
 
     @Column(name = "price")
+    @Min(value = 0, message = "Price must be at least 0")
+    @Max(value = 10000, message = "Price must not exceed 10,000")
     private Integer price;
 
     @CreationTimestamp
