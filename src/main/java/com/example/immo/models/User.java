@@ -16,11 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-/*
- * @Data est une annotation Lombok. Nul besoin d’ajouter les getters et les
- * setters. La librairie Lombok s’en charge pour nous. Très utile pour alléger
- * le code.
- */
 @Entity(name = "users")
 /*
  * @Entity est une annotation qui indique que la classe correspond à une table
@@ -30,11 +25,10 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Table(name = "users")
-/* spring security needs some UserDetails methods to be implemented */
+// spring security needs some UserDetails methods to be implemented
 public class User implements UserDetails {
 
     @Id
-    /* GeneratedValue / Identity : autoincrement a number when id is missing */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer userId;
