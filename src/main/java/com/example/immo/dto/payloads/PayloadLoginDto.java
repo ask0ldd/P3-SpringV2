@@ -13,7 +13,7 @@ public class PayloadLoginDto {
     private String email;
 
     @NotEmpty
-    @Size(min=8, max=32, message="The password must be between {min} and {max} characters long")
+    @Size(min=5, max=32, message="The password must be between {min} and {max} characters long")
     private String password;
 
     public PayloadLoginDto(String email, String password) {
