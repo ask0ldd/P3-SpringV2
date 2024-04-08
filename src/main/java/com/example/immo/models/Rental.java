@@ -28,11 +28,11 @@ public class Rental {
     private User owner;
 
     @Column(name = "name", nullable = false, length = 255)
-    @Size(min = 2, message = "Name must be at least 2 characters long")
+    @Size(min=2, max=255, message="The name of the rental must be between {min} and {max} characters long")
     private String name;
 
     @Column(name = "description", nullable = false, length = 2000)
-    @Size(min = 2, message = "Description must be at least 2 characters long")
+    @Size(min=2, max=2000, message="The description of the rental must be between {min} and {max} characters long")
     private String description;
 
     @Column(name = "picture", length = 255)

@@ -1,6 +1,7 @@
 package com.example.immo.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,9 +40,10 @@ public class User implements UserDetails {
     private Integer userId;
 
     @Column(name = "name", nullable = false, length = 255)
+    @Size(min=3, max=128, message="The username must be between {min} and {max} characters long")
     private String name;
 
-    @Column(name = "email", unique = true) // !!! soutenance : unique
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password", nullable = false, length = 255)
