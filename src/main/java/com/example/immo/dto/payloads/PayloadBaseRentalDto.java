@@ -21,7 +21,7 @@ public class PayloadBaseRentalDto {
     @Schema(description = "The description of the rental")
     @JsonProperty("description")
     @NotEmpty
-    @Size(min=2, max=200, message="The description of the rental must be between {min} and {max} characters long")
+    @Size(min=2, max=2000, message="The description of the rental must be between {min} and {max} characters long")
     private String description;
 
     @Schema(description = "The surface of the rental")

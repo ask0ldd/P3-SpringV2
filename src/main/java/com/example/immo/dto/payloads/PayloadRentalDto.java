@@ -6,6 +6,8 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
@@ -22,12 +24,11 @@ public class PayloadRentalDto extends PayloadBaseRentalDto {
     private MultipartFile picture;
 
     public PayloadRentalDto(
-            @NotEmpty
-            @Size(min=2, max=255, message="The name of the rental must be between {min} and {max} characters long")
             String name,
-            @NotEmpty
-            @Size(min=2, max=200, message="The description of the rental must be between {min} and {max} characters long")
-            String description, Integer price, Integer surface, MultipartFile picture)
+            String description,
+            Integer price,
+            Integer surface,
+            MultipartFile picture)
     {
         this.setName(name);
         this.setDescription(description);
