@@ -17,18 +17,13 @@ public class PayloadRegistrationDto {
     private String email;
 
     @NotEmpty
-    @Size(min=8, max=32, message="The password must be between {min} and {max} characters long")
+    @Size(min=5, max=32, message="The password must be between {min} and {max} characters long")
     private String password;
 
     public PayloadRegistrationDto(String email, String name, String password) {
-        super();
         this.username = name;
         this.email = email;
         this.password = password;
-    }
-
-    public String toString() {
-        return "Registration infos = " + this.username + " : " + this.password;
     }
 
 }

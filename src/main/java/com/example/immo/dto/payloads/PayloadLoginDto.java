@@ -17,7 +17,6 @@ public class PayloadLoginDto {
     private String password;
 
     public PayloadLoginDto(String email, String password) {
-        super();
         this.email = email;
         this.password = password;
     }
