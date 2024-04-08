@@ -12,6 +12,7 @@ import com.example.immo.services.FileSystemService;
 import com.example.immo.services.RentalService;
 import com.example.immo.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -155,11 +156,14 @@ public class RentalController {
             @ApiResponse(responseCode = "401", description = "Unauthorized."),
             @ApiResponse(responseCode = "500", description = "Internal server error.")
     })
-    public ResponseEntity<?> createRental(HttpServletRequest request, @RequestParam final String name,
-            @RequestParam final String description, @RequestParam final Integer surface,
-            @RequestParam final Integer price, @RequestBody final MultipartFile picture) {
+    public ResponseEntity<?> createRental(HttpServletRequest request,
+                                          @RequestParam final String name,
+                                          @RequestParam final String description,
+                                          @RequestParam final Integer surface,
+                                          @RequestParam final Integer price,
+                                          @RequestPart(required = true) final MultipartFile picture)
+    {
         try {
-            // !!! Cannot invoke "org.springframework.web.multipart.MultipartFile.isEmpty()" because "picture" is null
             if (picture == null || picture.isEmpty()) {
                 return new ResponseEntity<DefaultResponseDto>(new DefaultResponseDto("Invalid Picture."),
                         HttpStatus.BAD_REQUEST);
